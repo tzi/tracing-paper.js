@@ -98,12 +98,12 @@
         event.preventDefault();
         var d = tracingPaper.toSVGPath();
         var content  =
-              '<div>' + d + '</div>'
-            + '<svg width="250" height="250" viewBox="0 0 ' + size + ' ' + size +'" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+              '<svg width="250" height="250" viewBox="0 0 ' + size + ' ' + size +'" version="1.1" xmlns="http://www.w3.org/2000/svg">'
                 + '<path d="' + d + '" fill="none" stroke="black" stroke-width="' + (0.014 * size) + '" stroke-linecap="round"></path>'
             + '</svg>'
+            + '<div>' + d + '</div>'
             + '<style>'
-              + 'div { padding-bottom: 1em; }'
+              + 'div { padding-top: 1em; }'
               + 'svg { display: block; margin: auto; border: 1px solid #ccf; }'
             + '</style>';
         var popupWindow = window.open('', '', 'width=500,height=400,resizeable,scrollbars');
