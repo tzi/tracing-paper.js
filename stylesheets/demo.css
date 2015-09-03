@@ -22,7 +22,13 @@ html, body {
     background: rgba(196, 182, 173, 0.3);
 }
 
-.controls {
+.import {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+}
+
+.move {
     position: absolute;
     top: 1em;
     right: 1em;

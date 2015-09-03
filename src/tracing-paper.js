@@ -2,6 +2,7 @@ function TracingPaper(_element, _width, _height) {
     'use strict';
 
     var _path = [];
+    var _updateCallback = [];
 
     size(_width, _height);
     initEvent();
@@ -11,7 +12,9 @@ function TracingPaper(_element, _width, _height) {
         addPoint: addPoint,
         removeLastPoint: removeLastPoint,
         reset: reset,
-        toSVGPath: toSVGPath
+        fromSVGPath: fromSVGPath,
+        toSVGPath: toSVGPath,
+        onUpdate: onUpdate
     };
 
     function initEvent() {
@@ -30,6 +33,10 @@ function TracingPaper(_element, _width, _height) {
     }
 
     function resize(width, height) {
+        for (var i = 0; i < _path.length; i++) {
+            _path[i].x += (width - _width) / 2;
+            _path[i].y += (height - _height) / 2;
+        }
         size(width, height);
         update();
     }
@@ -57,6 +64,17 @@ function TracingPaper(_element, _width, _height) {
         clean();
     }
 
+    function fromSVGPath(SVGPath) {
+        reset();
+        SVGPath = SVGPath.trim();
+        var points = SVGPath.substring(1, SVGPath.length - 2).split(' L');
+        for (var i = 0; i < points.length; i++) {
+            var point = points[i].split(' ');
+            addPoint(point[0], point[1]);
+        }
+        update();
+    }
+
     function toSVGPath() {
         var SVGPath = '';
         for (var i = 0; i < _path.length; i++) {
@@ -69,6 +87,13 @@ function TracingPaper(_element, _width, _height) {
     function update() {
         clean();
         draw();
+        for (var i = 0; i < _updateCallback.length; i++) {
+            _updateCallback[i]();
+        }
+    }
+
+    function onUpdate(callback) {
+        _updateCallback.push(callback);
     }
 
     function clean() {
@@ -78,17 +103,21 @@ function TracingPaper(_element, _width, _height) {
 
     function draw() {
         for (var i = 0; i < _path.length; i++) {
-            drawPoint(_path[i])
+            drawPoint(_path[i], i == _path.length - 1);
         }
         drawLine(_path);
     }
 
-    function drawPoint(point) {
+    function drawPoint(point, highlight) {
         var context = getContext();
-        var width = 6;
+        var width = 8;
+        var color = 'rgba(60, 30, 255, 0.4)';
+        if (highlight) {
+            color = 'rgba(255, 30, 60, 0.6)';
+        }
         context.beginPath();
         context.rect(point.x - width / 2, point.y - width / 2, width, width);
-        context.fillStyle = '#666666';
+        context.fillStyle = color;
         context.fill();
     }
 

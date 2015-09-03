@@ -10,7 +10,12 @@
 <div id="gmap"></div>
 <canvas id="tracing-paper">Your browser does not support the canvas element.</canvas>
 
-<form name="controls" class="controls">
+<form name="import" class="import">
+    <input type="text" name="path" value="" />
+    <button type="submit">Load</button>
+</form>
+
+<form name="move" class="move">
     <input type="text" name="coordinates" value="43.923538,4.506712" />
     <button type="submit">Move</button>
 </form>
@@ -28,8 +33,8 @@
     <form name="undo">
         <button type="submit">Undo</button>
     </form>
-    <form name="export">
-        <button type="submit">Export as SVG path</button>
+    <form name="preview">
+        <button type="submit">Preview</button>
     </form>
 </div>
 
@@ -40,7 +45,7 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('gmap'), {
             center: {lat: 43.923538, lng: 4.506712},
-            zoom: 15,
+            zoom: 16,
             mapTypeId: google.maps.MapTypeId.SATELLITE,
             disableDefaultUI: true
         });
@@ -48,12 +53,21 @@
 
     var size = 500;
     var canvas = document.getElementById('tracing-paper');
-    var tracingPaper = TracingPaper(canvas, 150, 150);
+    var tracingPaper = TracingPaper(canvas);
     tracingPaper.resize(size, size);
+    tracingPaper.onUpdate(function() {
+        document.forms['import'].path.value = tracingPaper.toSVGPath();
+    });
 
-    document.forms['controls'].addEventListener('submit', function(event) {
+    document.forms['import'].addEventListener('submit', function(event) {
         event.preventDefault();
-        var coords = document.forms['controls'].coordinates.value.split(',');
+        var path = document.forms['import'].path.value;
+        tracingPaper.fromSVGPath(path);
+    });
+
+    document.forms['move'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        var coords = document.forms['move'].coordinates.value.split(',');
         var center = new google.maps.LatLng(coords[0], coords[1]);
         map.setCenter(center);
     });
@@ -80,9 +94,21 @@
         tracingPaper.removeLastPoint();
     });
 
-    document.forms['export'].addEventListener('submit', function(event) {
+    document.forms['preview'].addEventListener('submit', function(event) {
         event.preventDefault();
-        alert(tracingPaper.toSVGPath());
+        var d = tracingPaper.toSVGPath();
+        var content  =
+              '<div>' + d + '</div>'
+            + '<svg width="250" height="250" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+                + '<path d="' + d + '" fill="none" stroke="black" stroke-width="15" stroke-linecap="round"></path>'
+            + '</svg>'
+            + '<style>'
+              + 'div { padding-bottom: 1em; }'
+              + 'svg { display: block; margin: auto; border: 1px solid #ccf; }'
+            + '</style>';
+        var popupWindow = window.open('', '', 'width=500,height=400,resizeable,scrollbars');
+        popupWindow.document.write(content);
+        popupWindow.document.close();
     });
 </script>
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&callback=initMap"></script>
