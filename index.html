@@ -16,6 +16,12 @@
 </form>
 
 <div class="actions">
+    <form name="enlarge">
+        <button type="submit">Agrandir le claque</button>
+    </form>
+    <form name="reduce">
+        <button type="submit">Réduire le calque</button>
+    </form>
     <form name="reset">
         <button type="submit">Reset</button>
     </form>
@@ -23,7 +29,7 @@
         <button type="submit">Undo</button>
     </form>
     <form name="export">
-        <button type="submit">Export to SVG path</button>
+        <button type="submit">Export as SVG path</button>
     </form>
 </div>
 
@@ -34,21 +40,34 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('gmap'), {
             center: {lat: 43.923538, lng: 4.506712},
-            zoom: 16,
+            zoom: 15,
             mapTypeId: google.maps.MapTypeId.SATELLITE,
             disableDefaultUI: true
         });
     }
 
+    var size = 500;
     var canvas = document.getElementById('tracing-paper');
     var tracingPaper = TracingPaper(canvas, 150, 150);
-    tracingPaper.resize(500, 500);
+    tracingPaper.resize(size, size);
 
     document.forms['controls'].addEventListener('submit', function(event) {
         event.preventDefault();
         var coords = document.forms['controls'].coordinates.value.split(',');
         var center = new google.maps.LatLng(coords[0], coords[1]);
         map.setCenter(center);
+    });
+
+    document.forms['enlarge'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        size += 50;
+        tracingPaper.resize(size, size);
+    });
+
+    document.forms['reduce'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        size -= 50;
+        tracingPaper.resize(size, size);
     });
 
     document.forms['reset'].addEventListener('submit', function(event) {
