@@ -3,44 +3,68 @@
 <head>
     <meta charset="utf-8">
     <title>tracing-paper.js</title>
-    <style>
-        #gmap {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            left: 0;
-            top: 0;
-        }
-        #tracing-paper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            margin: auto;
-
-            background: rgba(196, 182, 173, 0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="stylesheets/demo.css">
 </head>
 <body>
 
 <div id="gmap"></div>
 <canvas id="tracing-paper">Your browser does not support the canvas element.</canvas>
 
+<form name="controls" class="controls">
+    <input type="text" name="coordinates" value="43.923538,4.506712" />
+    <button type="submit">Move</button>
+</form>
+
+<div class="actions">
+    <form name="reset">
+        <button type="submit">Reset</button>
+    </form>
+    <form name="undo">
+        <button type="submit">Undo</button>
+    </form>
+    <form name="export">
+        <button type="submit">Export to SVG path</button>
+    </form>
+</div>
+
+<script src="src/rounding.js"></script>
 <script src="src/tracing-paper.js"></script>
 <script>
     var map;
     function initMap() {
         map = new google.maps.Map(document.getElementById('gmap'), {
-            center: {lat: -34.397, lng: 150.644},
-            zoom: 8
+            center: {lat: 43.923538, lng: 4.506712},
+            zoom: 16,
+            mapTypeId: google.maps.MapTypeId.SATELLITE,
+            disableDefaultUI: true
         });
     }
 
     var canvas = document.getElementById('tracing-paper');
     var tracingPaper = TracingPaper(canvas, 150, 150);
-    tracingPaper.resize(150, 150);
+    tracingPaper.resize(500, 500);
+
+    document.forms['controls'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        var coords = document.forms['controls'].coordinates.value.split(',');
+        var center = new google.maps.LatLng(coords[0], coords[1]);
+        map.setCenter(center);
+    });
+
+    document.forms['reset'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        tracingPaper.reset();
+    });
+
+    document.forms['undo'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        tracingPaper.removeLastPoint();
+    });
+
+    document.forms['export'].addEventListener('submit', function(event) {
+        event.preventDefault();
+        alert(tracingPaper.toSVGPath());
+    });
 </script>
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&callback=initMap"></script>
 

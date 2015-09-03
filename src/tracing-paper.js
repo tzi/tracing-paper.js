@@ -2,9 +2,6 @@ function TracingPaper(_element, _width, _height) {
     'use strict';
 
     var _path = [];
-    addPoint(1, 8);
-    addPoint(8, 1);
-    addPoint(14, 8);
 
     size(_width, _height);
     initEvent();
@@ -12,7 +9,9 @@ function TracingPaper(_element, _width, _height) {
     return {
         resize: resize,
         addPoint: addPoint,
-        removeLastPoint: removeLastPoint
+        removeLastPoint: removeLastPoint,
+        reset: reset,
+        toSVGPath: toSVGPath
     };
 
     function initEvent() {
@@ -53,6 +52,20 @@ function TracingPaper(_element, _width, _height) {
         update();
     }
 
+    function reset() {
+        _path = [];
+        clean();
+    }
+
+    function toSVGPath() {
+        var SVGPath = '';
+        for (var i = 0; i < _path.length; i++) {
+            var prefix = (i == 0) ? 'M' : 'L';
+            SVGPath += prefix + _path[i].x + ' ' + _path[i].y + ' ';
+        }
+        return SVGPath + 'Z';
+    }
+
     function update() {
         clean();
         draw();
@@ -75,7 +88,7 @@ function TracingPaper(_element, _width, _height) {
         var width = 6;
         context.beginPath();
         context.rect(point.x - width / 2, point.y - width / 2, width, width);
-        context.fillStyle = '#AAAAAA';
+        context.fillStyle = '#666666';
         context.fill();
     }
 
