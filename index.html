@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>tracing-paper.js</title>
+    <link rel="stylesheet" href="gmap/gmap.css" />
+    <style>
+        #tracing-paper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+
+            background: rgba(196, 182, 173, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div id="gmap"></div>
+<canvas id="tracing-paper">Your browser does not support the canvas element.</canvas>
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js"></script>
+<script src="gmap/gmap.js"></script>
+<script src="src/tracing-paper.js"></script>
+<script>
+    var canvas = document.getElementById('tracing-paper');
+    var tracingPaper = TracingPaper(canvas, 150, 150);
+    tracingPaper.resize(150, 150);
+</script>
+
+</body>
+</html>
