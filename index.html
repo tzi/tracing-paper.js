@@ -3,8 +3,14 @@
 <head>
     <meta charset="utf-8">
     <title>tracing-paper.js</title>
-    <link rel="stylesheet" href="gmap/gmap.css" />
     <style>
+        #gmap {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            top: 0;
+        }
         #tracing-paper {
             position: absolute;
             top: 0;
@@ -22,15 +28,21 @@
 <div id="gmap"></div>
 <canvas id="tracing-paper">Your browser does not support the canvas element.</canvas>
 
-<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js"></script>
-<script src="gmap/gmap.js"></script>
 <script src="src/tracing-paper.js"></script>
 <script>
+    var map;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('gmap'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 8
+        });
+    }
+
     var canvas = document.getElementById('tracing-paper');
     var tracingPaper = TracingPaper(canvas, 150, 150);
     tracingPaper.resize(150, 150);
 </script>
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&callback=initMap"></script>
 
 </body>
 </html>
